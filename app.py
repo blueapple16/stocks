@@ -1,7 +1,6 @@
 # pip install streamlit fbprophet yfinance plotly
 import streamlit as st
 from datetime import date
-pip install yfinance
 import yfinance as yf
 from fbprophet import Prophet
 from fbprophet.plot import plot_plotly
