@@ -5,39 +5,123 @@ import yfinance as yf
 from fbprophet import Prophet
 from fbprophet.plot import plot_plotly
 from plotly import graph_objs as go
+import datetime 
+import pandas as pd
+import talib
+import ta
+import requests
+yf.pdr_override()
 
-START = "2015-01-01"
 TODAY = date.today().strftime("%Y-%m-%d")
 
 st.title('Stock Forecast App')
 
-stocks = ('GOOG', 'AAPL', 'MSFT', 'GME')
-selected_stock = st.selectbox('Select dataset for prediction', stocks)
+st.sidebar.header('User Input Parameters')
+today = datetime.date.today()
+def user_input_features():
+    ticker = st.sidebar.text_input("Stock Symbol", 'AAPL')
+    start_date = st.sidebar.text_input("Start Date", '2018-01-01')
+    end_date = st.sidebar.text_input("End Date", f'{today}')
+    est_years = st.sidebar.slider("Years of Prediction", 1, 4)
+    return ticker, start_date, end_date, est_years
 
-n_years = st.slider('Years of prediction:', 1, 4)
+symbol, start, end, npredict = user_input_features()
+
+selected_stock = symbol
+
+#n_years = st.slider('Years of prediction:', 1, 4)
+n_years = npredict
 period = n_years * 365
-
 
 @st.cache
 def load_data(ticker):
-    data = yf.download(ticker, START, TODAY)
-    data.reset_index(inplace=True)
-    return data
+    sdata = yf.download(ticker, start, TODAY)
+    sdata.reset_index(inplace=True)
+    return sdata
 
-	
+def load_name(ticker):
+    detail = yf.Ticker(ticker)
+    result = detail.info['longName']
+    return result
+
+#readme checkbox start
+readme = st.checkbox("readme for details")
+
+if readme:
+
+    st.write("""
+        This is a web app demo using [streamlit](https://streamlit.io/) library. It is hosted in [heroku](https://www.heroku.com/). You may get the codes via [github](https://github.com/blueapple16/stocks)
+        """)
+
+
+    st.write("""
+        On the side bar, please enter the Stock Symbol and years of prediction on the stock pricings.
+        """)
+
+
+    st.write("""
+Examples of Stock Symbol (any under [Yahoo Finance] (https://finance.yahoo.com/)) would be as below:
+        """)
+
+    st.write(pd.DataFrame({'Stock Symbol': ['5099.kl', 'AAPL', 'TSLA'],
+'Details': ['Airasia BHD', 'Apple Inc', 'Tesla', ],
+    }))
+
+
+    st.write ("For more info, please contact:")
+
+    st.write("<a href='https://www.linkedin.com/in/kah-wee-lim-02836a76/'>Kah Wee</a>",   unsafe_allow_html=True)
+#readme checkbox end
+
+st.markdown("""---""")
 data_load_state = st.text('Loading data...')
 data = load_data(selected_stock)
-data_load_state.text('Loading data... done!')
+data_load_state.text('Loading data... Retrieving details for '+ str(selected_stock))
 
-st.subheader('Raw data')
-st.write(data.tail())
+company_name = load_name(selected_stock)
+
+def background(target):
+    bg = yf.Ticker(target)
+#    xxx = bg.info['xxx']
+#     bsector = bg.info['sector']
+    if 'longBusinessSummary' in bg.info == True:
+        blong = bg.info['longBusinessSummary']
+    else:
+        blong = 'Background not retrievable from Yahoo Finance'
+    return blong
+
+bglong = background(selected_stock)
+
+st.subheader('Background of ' + str(company_name))
+if selected_stock == '5099.kl':
+    st.write(company_name + ' provides air transportation throughout Asia. '
+                            'The airline operator focuses on delivering lower fares without a host of other amenities. '
+                            'It does not provide frequent-flyer miles or airport lounges, but looks to cater affordable '
+                            'transportation to all customers. In-flight meals and drinks are additional purchases available '
+                            'to customers. All short and long-haul flights are nonstop, and the company focuses on high frequency '
+                            'and high turnaround of flights. Operating segments are grouped by geographic regions. '
+                            'Revenue derived from Malaysia makes up the majority of revenue, but the company does hold material '
+                            'operations in several Asian regions.')
+
+else:
+    st.write(bglong)
+
+st.subheader('Raw data of ' + str(company_name))
+readme2 = st.checkbox("Tick to see last 5 days' Open/Close Performance")
+
+if readme2:
+    st.write(data.tail())
+
+# testinfo = yf.Ticker(selected_stock)
+# st.write(testinfo.info)
+# st.write(testinfo.info['longBusinessSummary'])
 
 # Plot raw data
 def plot_raw_data():
 	fig = go.Figure()
-	fig.add_trace(go.Scatter(x=data['Date'], y=data['Open'], name="stock_open"))
-	fig.add_trace(go.Scatter(x=data['Date'], y=data['Close'], name="stock_close"))
-	fig.layout.update(title_text='Time Series data with Rangeslider', xaxis_rangeslider_visible=True)
+	fig.add_trace(go.Scatter(x=data['Date'], y=data['Open'], name="Stock Open"))
+	fig.add_trace(go.Scatter(x=data['Date'], y=data['Close'], name="Stock Close"))
+	fig.layout.update(title_text='<b>Stock Chart </b>of ' + str(company_name) + '<br>Rangeslider for Date Adjustment', xaxis_rangeslider_visible=True)
 	st.plotly_chart(fig)
 	
 plot_raw_data()
@@ -53,12 +137,77 @@ forecast = m.predict(future)
 
 # Show and plot forecast
 st.subheader('Forecast data')
-st.write(forecast.tail())
-    
-st.write(f'Forecast plot for {n_years} years')
-fig1 = plot_plotly(m, forecast)
-st.plotly_chart(fig1)
+readme3 = st.checkbox("Tick to see last 5 Predicted days' Open/Close Performance")
+if readme3:
+    st.write(forecast.tail())
 
-st.write("Forecast components")
+
+def plot_predict_data():
+    fig1 = plot_plotly(m, forecast)
+    fig1.layout.update(title_text='<b>Stockprice Chart with Prediction</b> of ' + str(company_name) + '<br>Rangeslider for Date Adjustment', xaxis_rangeslider_visible=True)
+    st.plotly_chart(fig1)
+
+plot_predict_data()
+
+
+st.subheader("Forecast components")
 fig2 = m.plot_components(forecast)
 st.write(fig2)
+
+
+### Technical Analysis of the stock
+TA_Avail = ['SMA & EMA','Bollinger Band','RSI']
+TA_Select = st.sidebar.multiselect('Select TA to be performed', TA_Avail)
+# ## SMA and EMA
+#Simple Moving Average
+data['SMA'] = talib.SMA(data['Close'], timeperiod = 20)
+
+# Exponential Moving Average
+data['EMA'] = talib.EMA(data['Close'], timeperiod = 20)
+
+# Plot
+def plot_ta1_data():
+    figta1 = go.Figure()
+    figta1.add_trace(go.Scatter(x=data['Date'], y=data['Close'], name="Stock Close"))
+    figta1.add_trace(go.Scatter(x=data['Date'], y=data['SMA'], name="SMA 20"))
+    figta1.add_trace(go.Scatter(x=data['Date'], y=data['EMA'], name="EMA 20"))
+    figta1.layout.update(title_text='<b>SMA 20 vs EMA 20 </b>of ' + str(company_name) + '<br>Rangeslider for Date Adjustment',
+                      xaxis_rangeslider_visible=True)
+    st.plotly_chart(figta1)
+
+# Bollinger Bands
+data['upper_band'], data['middle_band'], data['lower_band'] = talib.BBANDS(data['Close'], timeperiod =20)
+
+# Plot
+def plot_ta2_data():
+    figta2 = go.Figure()
+    figta2.add_trace(go.Scatter(x=data['Date'], y=data['Close'], name="Stock Close"))
+    figta2.add_trace(go.Scatter(x=data['Date'], y=data['upper_band'], name="Upper Band"))
+    figta2.add_trace(go.Scatter(x=data['Date'], y=data['middle_band'], name="Middle Band"))
+    figta2.add_trace(go.Scatter(x=data['Date'], y=data['lower_band'], name="Lower Band"))
+    figta2.layout.update(title_text='<b>Bollinger Bands </b>of ' + str(company_name) + '<br>Rangeslider for Date Adjustment',
+                      xaxis_rangeslider_visible=True)
+    st.plotly_chart(figta2)
+
+
+# ## RSI (Relative Strength Index)
+# RSI
+data['RSI'] = talib.RSI(data['Close'], timeperiod=14)
+
+# Plot
+def plot_ta3_data():
+    figta3 = go.Figure()
+    figta3.add_trace(go.Scatter(x=data['Date'], y=data['Close'], name="Stock Close"))
+    figta3.add_trace(go.Scatter(x=data['Date'], y=data['RSI'], name="RSI 14"))
+    figta3.layout.update(title_text='<b>RSI 14 </b>of ' + str(company_name) + '<br>Rangeslider for Date Adjustment',
+                      xaxis_rangeslider_visible=True)
+    st.plotly_chart(figta3)
+
+if 'SMA & EMA' in TA_Select:
+    plot_ta1_data()
+
+elif 'Bollinger Band' in TA_Select:
+    plot_ta2_data()
+
+elif 'RSI' in TA_Select:
+    plot_ta3_data()
