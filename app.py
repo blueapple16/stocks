@@ -83,9 +83,9 @@ company_name = load_name(selected_stock)
 
 def background(target):
     bg = yf.Ticker(target)
-#    xxx = bg.info['xxx']
-#     bsector = bg.info['sector']
-    if 'longBusinessSummary' in bg.info == True:
+    #    xxx = bg.info['xxx']
+    #     bsector = bg.info['sector']
+    if 'longBusinessSummary' in bg.info:
         blong = bg.info['longBusinessSummary']
     else:
         blong = 'Background not retrievable from Yahoo Finance'
