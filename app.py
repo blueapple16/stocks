@@ -7,8 +7,8 @@ from fbprophet.plot import plot_plotly
 from plotly import graph_objs as go
 import datetime 
 import pandas as pd
-import talib
-import ta
+#import talib
+#import ta
 import requests
 yf.pdr_override()
 
