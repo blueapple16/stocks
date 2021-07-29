@@ -50,7 +50,7 @@ readme = st.checkbox("readme for details")
 if readme:
 
     st.write("""
-        This is a web app demo using [streamlit](https://streamlit.io/) library. It is hosted in [heroku](https://www.heroku.com/). You may get the codes via [github](https://github.com/blueapple16/stocks)
+        This is a web app demo using [streamlit](https://streamlit.io/) library. It is hosted in [streamlit share](https://share.streamlit.io/blueapple16/stocks/main/app.py). You may get the codes via [github](https://github.com/blueapple16/stocks)
         """)
 
 
