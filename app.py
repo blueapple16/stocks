@@ -164,6 +164,8 @@ st.write(fig2)
 
 # ### Technical Analysis of the stock
 # ### install, for streamlit share
+import os
+import sys
 import subprocess
 
 # check if the library folder already exists, to avoid building everytime you load the pahe
