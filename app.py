@@ -14,7 +14,7 @@ yf.pdr_override()
 
 TODAY = date.today().strftime("%Y-%m-%d")
 
-st.title('Stock Forecast App')
+st.title('Stock Forecasting - with fbprophet')
 
 st.sidebar.header('User Input Parameters')
 today = datetime.date.today()
