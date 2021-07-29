@@ -154,6 +154,13 @@ st.subheader("Forecast components")
 fig2 = m.plot_components(forecast)
 st.write(fig2)
 
+### Measure RME and R2 of fbprophet
+
+
+
+
+
+
 
 ### Technical Analysis of the stock
 TA_Avail = ['SMA & EMA','Bollinger Band','RSI']
