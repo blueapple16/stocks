@@ -163,10 +163,6 @@ st.write(fig2)
 
 
 # ### Technical Analysis of the stock
-# ### Import
-import talib
-import ta
-
 # ### install, for streamlit share
 import os
 import sys
@@ -201,7 +197,11 @@ if not os.path.isdir("/tmp/ta-lib"):
 
 # add the library to our current environment
 from ctypes import *
+import talib
+import ta
 
+
+# ### Start TA codes
 lib = CDLL("/home/appuser/lib/libta_lib.so.0")
 
 TA_Avail = ['SMA & EMA','Bollinger Band','RSI']
