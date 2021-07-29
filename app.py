@@ -33,7 +33,7 @@ selected_stock = symbol
 n_years = npredict
 period = n_years * 365
 
-@st.cache
+@st.cache(allow_output_mutation=True)
 def load_data(ticker):
     sdata = yf.download(ticker, start, TODAY)
     sdata.reset_index(inplace=True)
@@ -74,6 +74,7 @@ Examples of Stock Symbol (any under [Yahoo Finance] (https://finance.yahoo.com/)
 #readme checkbox end
 
 st.markdown("""---""")
+
 data_load_state = st.text('Loading data...')
 data = load_data(selected_stock)
 data_load_state.text('Loading data... Retrieving details for '+ str(selected_stock))
@@ -207,10 +208,13 @@ finally:
 
 
 # ### Start TA codes
-lib = CDLL("/home/appuser/lib/libta_lib.so.0")
-
+st.markdown("""---""")
 TA_Avail = ['SMA & EMA','Bollinger Band','RSI']
-TA_Select = st.sidebar.multiselect('Select TA to be performed', TA_Avail)
+TA_Select = st.sidebar.multiselect('Select Technical Analysis (TA) to be performed', TA_Avail)
+st.write("""
+Please select a Technical Analysis option from the sidebar to show relevant charts
+""")
+	
 # ## SMA and EMA
 #Simple Moving Average
 data['SMA'] = talib.SMA(data['Close'], timeperiod = 20)
@@ -256,13 +260,13 @@ def plot_ta3_data():
                       xaxis_rangeslider_visible=True)
     st.plotly_chart(figta3)
 
-if 'SMA & EMA' in TA_Select:
-    plot_ta1_data()
-
-elif 'Bollinger Band' in TA_Select:
-    plot_ta2_data()
-
-elif 'RSI' in TA_Select:
-    plot_ta3_data()
+# Plot for multiselect
+for i in range(len(TA_Avail)):
+  if (TA_Avail[i]) in TA_Select and i == 0:
+      plot_ta1_data()
+  elif (TA_Avail[i]) in TA_Select and i == 1:
+      plot_ta2_data()
+  elif (TA_Avail[i]) in TA_Select and i == 2:
+      plot_ta3_data()
 
 
