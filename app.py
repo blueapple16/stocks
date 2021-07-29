@@ -5,8 +5,6 @@ import yfinance as yf
 from fbprophet import Prophet
 from fbprophet.plot import plot_plotly
 from plotly import graph_objs as go
-import prophet.diagnostics
-import prophet.plot
 import datetime 
 import pandas as pd
 #import talib
@@ -169,13 +167,13 @@ st.write('The mean squared error is '+ str(mse))
 mae = mean_absolute_error(metric_df.y, metric_df.yhat)
 st.write('The mean absolute error is '+ str(mae))
 
-st.subheader("Cross Validation of the Prediction Modal")
-from prophet.diagnostics import cross_validation
-df_cv = cross_validation(m, initial='730 days', period='180 days', horizon = '365 days')
-# st.write(df_cv.head())
-from prophet.plot import plot_cross_validation_metric
-fig4 = plot_cross_validation_metric(df_cv, metric='mape')
-st.write(fig4)
+#st.subheader("Cross Validation of the Prediction Modal")
+#from prophet.diagnostics import cross_validation
+#df_cv = cross_validation(m, initial='730 days', period='180 days', horizon = '365 days')
+# ###st.write(df_cv.head())
+#from prophet.plot import plot_cross_validation_metric
+#fig4 = plot_cross_validation_metric(df_cv, metric='mape')
+#st.write(fig4)
 
 
 # from prophet.diagnostics import performance_metrics
