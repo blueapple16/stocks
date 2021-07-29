@@ -162,59 +162,60 @@ st.write(fig2)
 
 
 
-### Technical Analysis of the stock
-TA_Avail = ['SMA & EMA','Bollinger Band','RSI']
-TA_Select = st.sidebar.multiselect('Select TA to be performed', TA_Avail)
-# ## SMA and EMA
-#Simple Moving Average
-data['SMA'] = talib.SMA(data['Close'], timeperiod = 20)
+# ### Technical Analysis of the stock
+# TA_Avail = ['SMA & EMA','Bollinger Band','RSI']
+# TA_Select = st.sidebar.multiselect('Select TA to be performed', TA_Avail)
+# # ## SMA and EMA
+# #Simple Moving Average
+# data['SMA'] = talib.SMA(data['Close'], timeperiod = 20)
+#
+# # Exponential Moving Average
+# data['EMA'] = talib.EMA(data['Close'], timeperiod = 20)
+#
+# # Plot
+# def plot_ta1_data():
+#     figta1 = go.Figure()
+#     figta1.add_trace(go.Scatter(x=data['Date'], y=data['Close'], name="Stock Close"))
+#     figta1.add_trace(go.Scatter(x=data['Date'], y=data['SMA'], name="SMA 20"))
+#     figta1.add_trace(go.Scatter(x=data['Date'], y=data['EMA'], name="EMA 20"))
+#     figta1.layout.update(title_text='<b>SMA 20 vs EMA 20 </b>of ' + str(company_name) + '<br>Rangeslider for Date Adjustment',
+#                       xaxis_rangeslider_visible=True)
+#     st.plotly_chart(figta1)
+#
+# # Bollinger Bands
+# data['upper_band'], data['middle_band'], data['lower_band'] = talib.BBANDS(data['Close'], timeperiod =20)
+#
+# # Plot
+# def plot_ta2_data():
+#     figta2 = go.Figure()
+#     figta2.add_trace(go.Scatter(x=data['Date'], y=data['Close'], name="Stock Close"))
+#     figta2.add_trace(go.Scatter(x=data['Date'], y=data['upper_band'], name="Upper Band"))
+#     figta2.add_trace(go.Scatter(x=data['Date'], y=data['middle_band'], name="Middle Band"))
+#     figta2.add_trace(go.Scatter(x=data['Date'], y=data['lower_band'], name="Lower Band"))
+#     figta2.layout.update(title_text='<b>Bollinger Bands </b>of ' + str(company_name) + '<br>Rangeslider for Date Adjustment',
+#                       xaxis_rangeslider_visible=True)
+#     st.plotly_chart(figta2)
+#
+#
+# # ## RSI (Relative Strength Index)
+# # RSI
+# data['RSI'] = talib.RSI(data['Close'], timeperiod=14)
+#
+# # Plot
+# def plot_ta3_data():
+#     figta3 = go.Figure()
+#     figta3.add_trace(go.Scatter(x=data['Date'], y=data['Close'], name="Stock Close"))
+#     figta3.add_trace(go.Scatter(x=data['Date'], y=data['RSI'], name="RSI 14"))
+#     figta3.layout.update(title_text='<b>RSI 14 </b>of ' + str(company_name) + '<br>Rangeslider for Date Adjustment',
+#                       xaxis_rangeslider_visible=True)
+#     st.plotly_chart(figta3)
+#
+# if 'SMA & EMA' in TA_Select:
+#     plot_ta1_data()
+#
+# elif 'Bollinger Band' in TA_Select:
+#     plot_ta2_data()
+#
+# elif 'RSI' in TA_Select:
+#     plot_ta3_data()
 
-# Exponential Moving Average
-data['EMA'] = talib.EMA(data['Close'], timeperiod = 20)
-
-# Plot
-def plot_ta1_data():
-    figta1 = go.Figure()
-    figta1.add_trace(go.Scatter(x=data['Date'], y=data['Close'], name="Stock Close"))
-    figta1.add_trace(go.Scatter(x=data['Date'], y=data['SMA'], name="SMA 20"))
-    figta1.add_trace(go.Scatter(x=data['Date'], y=data['EMA'], name="EMA 20"))
-    figta1.layout.update(title_text='<b>SMA 20 vs EMA 20 </b>of ' + str(company_name) + '<br>Rangeslider for Date Adjustment',
-                      xaxis_rangeslider_visible=True)
-    st.plotly_chart(figta1)
-
-# Bollinger Bands
-data['upper_band'], data['middle_band'], data['lower_band'] = talib.BBANDS(data['Close'], timeperiod =20)
-
-# Plot
-def plot_ta2_data():
-    figta2 = go.Figure()
-    figta2.add_trace(go.Scatter(x=data['Date'], y=data['Close'], name="Stock Close"))
-    figta2.add_trace(go.Scatter(x=data['Date'], y=data['upper_band'], name="Upper Band"))
-    figta2.add_trace(go.Scatter(x=data['Date'], y=data['middle_band'], name="Middle Band"))
-    figta2.add_trace(go.Scatter(x=data['Date'], y=data['lower_band'], name="Lower Band"))
-    figta2.layout.update(title_text='<b>Bollinger Bands </b>of ' + str(company_name) + '<br>Rangeslider for Date Adjustment',
-                      xaxis_rangeslider_visible=True)
-    st.plotly_chart(figta2)
-
-
-# ## RSI (Relative Strength Index)
-# RSI
-data['RSI'] = talib.RSI(data['Close'], timeperiod=14)
-
-# Plot
-def plot_ta3_data():
-    figta3 = go.Figure()
-    figta3.add_trace(go.Scatter(x=data['Date'], y=data['Close'], name="Stock Close"))
-    figta3.add_trace(go.Scatter(x=data['Date'], y=data['RSI'], name="RSI 14"))
-    figta3.layout.update(title_text='<b>RSI 14 </b>of ' + str(company_name) + '<br>Rangeslider for Date Adjustment',
-                      xaxis_rangeslider_visible=True)
-    st.plotly_chart(figta3)
-
-if 'SMA & EMA' in TA_Select:
-    plot_ta1_data()
-
-elif 'Bollinger Band' in TA_Select:
-    plot_ta2_data()
-
-elif 'RSI' in TA_Select:
-    plot_ta3_data()
