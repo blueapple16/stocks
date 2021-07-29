@@ -9,6 +9,7 @@ import datetime
 import pandas as pd
 #import talib
 #import ta
+from sklearn.metrics import mean_squared_error, r2_score, mean_absolute_error
 import requests
 yf.pdr_override()
 
@@ -156,7 +157,28 @@ fig2 = m.plot_components(forecast)
 st.write(fig2)
 
 ### Measure RME and R2 of fbprophet
+st.subheader("R2, Mean Squared Error and Mean Absolute Error of the Prediction Modal")
+metric_df = forecast.set_index('ds')[['yhat']].join(df_train.set_index('ds').y).reset_index()
+metric_df.dropna(inplace=True)
+r2 = r2_score(metric_df.y, metric_df.yhat)
+st.write('The r2 score is '+ str(r2))
+mse = mean_squared_error(metric_df.y, metric_df.yhat)
+st.write('The mean squared error is '+ str(mse))
+mae = mean_absolute_error(metric_df.y, metric_df.yhat)
+st.write('The mean absolute error is '+ str(mae))
 
+st.subheader("Cross Validation of the Prediction Modal")
+from prophet.diagnostics import cross_validation
+df_cv = cross_validation(m, initial='730 days', period='180 days', horizon = '365 days')
+# st.write(df_cv.head())
+from prophet.plot import plot_cross_validation_metric
+fig4 = plot_cross_validation_metric(df_cv, metric='mape')
+st.write(fig4)
+
+
+# from prophet.diagnostics import performance_metrics
+# df_p = performance_metrics(df_cv)
+# st.write(df_p.head())
 
 
 
