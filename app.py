@@ -168,8 +168,8 @@ import talib
 import ta
 
 # ### install, for streamlit share
- import os
- import sys
+import os
+import sys
 # check if the library folder already exists, to avoid building everytime you load the pahe
 if not os.path.isdir("/tmp/ta-lib"):
 
