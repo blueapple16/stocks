@@ -6,6 +6,5 @@ streamlit
 plotly
 fbprophet
 prophet
-prophet.diagnostics
 requests
 sklearn
