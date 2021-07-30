@@ -187,6 +187,8 @@ st.write('The mean absolute error is '+ str(mae))
 
 # ### Technical Analysis of the stock
 # ### install, for streamlit share
+import streamlit as st
+import requests
 import os
 import sys
 import subprocess
