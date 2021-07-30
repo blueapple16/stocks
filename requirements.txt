@@ -5,6 +5,5 @@ yfinance
 streamlit
 plotly
 fbprophet
-prophet
 requests
 sklearn
