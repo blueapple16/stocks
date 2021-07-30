@@ -186,111 +186,118 @@ st.write('The mean absolute error is '+ str(mae))
 
 
 # ### Technical Analysis of the stock
-# ### install, for streamlit share
-import streamlit as st
-import requests
-import os
-import sys
-import subprocess
-
-# check if the library folder already exists, to avoid building everytime you load the pahe
-if not os.path.isdir("/tmp/ta-lib"):
-
-    # Download ta-lib to disk
-    with open("/tmp/ta-lib-0.4.0-src.tar.gz", "wb") as file:
-        response = requests.get(
-            "http://prdownloads.sourceforge.net/ta-lib/ta-lib-0.4.0-src.tar.gz"
-        )
-        file.write(response.content)
-    # get our current dir, to configure it back again. Just house keeping
-    default_cwd = os.getcwd()
-    os.chdir("/tmp")
-    # untar
-    os.system("tar -zxvf ta-lib-0.4.0-src.tar.gz")
-    os.chdir("/tmp/ta-lib")
-    os.system("ls -la /app/equity/")
-    # build
-    os.system("./configure --prefix=/home/appuser")
-    os.system("make")
-    # install
-    os.system("make install")
-    # back to the cwd
-    os.chdir(default_cwd)
-    sys.stdout.flush()
-
-# add the library to our current environment
-from ctypes import *
-
-lib = CDLL("/home/appuser/lib/libta_lib.so.0.0.0")
-# import library
-try:
-    import talib
-except ImportError:
-    subprocess.check_call([sys.executable, "-m", "pip", "install", "--global-option=build_ext", "--global-option=-L/home/appuser/lib/", "--global-option=-I/home/appuser/include/", "ta-lib"])
-finally:
-    import talib
-
-
-# ### Start TA codes
-st.markdown("""---""")
-TA_Avail = ['SMA & EMA','Bollinger Band','RSI']
-TA_Select = st.sidebar.multiselect('Select Technical Analysis (TA) to be performed', TA_Avail)
-st.write("""
-Please select a Technical Analysis option from the sidebar to show relevant charts
-""")
-	
-# ## SMA and EMA
-#Simple Moving Average
-data['SMA'] = talib.SMA(data['Close'], timeperiod = 20)
-
-# Exponential Moving Average
-data['EMA'] = talib.EMA(data['Close'], timeperiod = 20)
-
-# Plot
-def plot_ta1_data():
-    figta1 = go.Figure()
-    figta1.add_trace(go.Scatter(x=data['Date'], y=data['Close'], name="Stock Close"))
-    figta1.add_trace(go.Scatter(x=data['Date'], y=data['SMA'], name="SMA 20"))
-    figta1.add_trace(go.Scatter(x=data['Date'], y=data['EMA'], name="EMA 20"))
-    figta1.layout.update(title_text='<b>SMA 20 vs EMA 20 </b>of ' + str(company_name) + '<br>Rangeslider for Date Adjustment',
-                      xaxis_rangeslider_visible=True)
-    st.plotly_chart(figta1)
-
-# Bollinger Bands
-data['upper_band'], data['middle_band'], data['lower_band'] = talib.BBANDS(data['Close'], timeperiod =20)
-
-# Plot
-def plot_ta2_data():
-    figta2 = go.Figure()
-    figta2.add_trace(go.Scatter(x=data['Date'], y=data['Close'], name="Stock Close"))
-    figta2.add_trace(go.Scatter(x=data['Date'], y=data['upper_band'], name="Upper Band"))
-    figta2.add_trace(go.Scatter(x=data['Date'], y=data['middle_band'], name="Middle Band"))
-    figta2.add_trace(go.Scatter(x=data['Date'], y=data['lower_band'], name="Lower Band"))
-    figta2.layout.update(title_text='<b>Bollinger Bands </b>of ' + str(company_name) + '<br>Rangeslider for Date Adjustment',
-                      xaxis_rangeslider_visible=True)
-    st.plotly_chart(figta2)
-
-
-# ## RSI (Relative Strength Index)
-# RSI
-data['RSI'] = talib.RSI(data['Close'], timeperiod=14)
-
-# Plot
-def plot_ta3_data():
-    figta3 = go.Figure()
-    figta3.add_trace(go.Scatter(x=data['Date'], y=data['Close'], name="Stock Close"))
-    figta3.add_trace(go.Scatter(x=data['Date'], y=data['RSI'], name="RSI 14"))
-    figta3.layout.update(title_text='<b>RSI 14 </b>of ' + str(company_name) + '<br>Rangeslider for Date Adjustment',
-                      xaxis_rangeslider_visible=True)
-    st.plotly_chart(figta3)
-
-# Plot for multiselect
-for i in range(len(TA_Avail)):
-  if (TA_Avail[i]) in TA_Select and i == 0:
-      plot_ta1_data()
-  elif (TA_Avail[i]) in TA_Select and i == 1:
-      plot_ta2_data()
-  elif (TA_Avail[i]) in TA_Select and i == 2:
-      plot_ta3_data()
+# # ### install, for streamlit share
+# import streamlit as st
+# import requests
+# import os
+# import sys
+# import subprocess
+# 
+# # check if the library folder already exists, to avoid building everytime you load the pahe
+# if not os.path.isdir("/tmp/ta-lib"):
+#     # Download ta-lib to disk
+#     with open("/tmp/ta-lib-0.4.0-src.tar.gz", "wb") as file:
+#         response = requests.get(
+#             "http://prdownloads.sourceforge.net/ta-lib/ta-lib-0.4.0-src.tar.gz"
+#         )
+#         file.write(response.content)
+#     # get our current dir, to configure it back again. Just house keeping
+#     default_cwd = os.getcwd()
+#     os.chdir("/tmp")
+#     # untar
+#     os.system("tar -zxvf ta-lib-0.4.0-src.tar.gz")
+#     os.chdir("/tmp/ta-lib")
+#     os.system("ls -la /app/equity/")
+#     # build
+#     os.system("./configure --prefix=/home/appuser")
+#     os.system("make")
+#     # install
+#     os.system("make install")
+#     # back to the cwd
+#     os.chdir(default_cwd)
+#     sys.stdout.flush()
+# 
+# # add the library to our current environment
+# from ctypes import *
+# 
+# lib = CDLL("/home/appuser/lib/libta_lib.so.0.0.0")
+# # import library
+# try:
+#     import talib
+# except ImportError:
+#     subprocess.check_call(
+#         [sys.executable, "-m", "pip", "install", "--global-option=build_ext", "--global-option=-L/home/appuser/lib/",
+#          "--global-option=-I/home/appuser/include/", "ta-lib"])
+# finally:
+#     import talib
+# 
+# # ### Start TA codes
+# st.markdown("""---""")
+# TA_Avail = ['SMA & EMA', 'Bollinger Band', 'RSI']
+# TA_Select = st.sidebar.multiselect('Select Technical Analysis (TA) to be performed', TA_Avail)
+# st.write("""
+# Please select a Technical Analysis option from the sidebar to show relevant charts
+# """)
+# 
+# # ## SMA and EMA
+# # Simple Moving Average
+# data['SMA'] = talib.SMA(data['Close'], timeperiod=20)
+# 
+# # Exponential Moving Average
+# data['EMA'] = talib.EMA(data['Close'], timeperiod=20)
+# 
+# 
+# # Plot
+# def plot_ta1_data():
+#     figta1 = go.Figure()
+#     figta1.add_trace(go.Scatter(x=data['Date'], y=data['Close'], name="Stock Close"))
+#     figta1.add_trace(go.Scatter(x=data['Date'], y=data['SMA'], name="SMA 20"))
+#     figta1.add_trace(go.Scatter(x=data['Date'], y=data['EMA'], name="EMA 20"))
+#     figta1.layout.update(
+#         title_text='<b>SMA 20 vs EMA 20 </b>of ' + str(company_name) + '<br>Rangeslider for Date Adjustment',
+#         xaxis_rangeslider_visible=True)
+#     st.plotly_chart(figta1)
+# 
+# 
+# # Bollinger Bands
+# data['upper_band'], data['middle_band'], data['lower_band'] = talib.BBANDS(data['Close'], timeperiod=20)
+# 
+# 
+# # Plot
+# def plot_ta2_data():
+#     figta2 = go.Figure()
+#     figta2.add_trace(go.Scatter(x=data['Date'], y=data['Close'], name="Stock Close"))
+#     figta2.add_trace(go.Scatter(x=data['Date'], y=data['upper_band'], name="Upper Band"))
+#     figta2.add_trace(go.Scatter(x=data['Date'], y=data['middle_band'], name="Middle Band"))
+#     figta2.add_trace(go.Scatter(x=data['Date'], y=data['lower_band'], name="Lower Band"))
+#     figta2.layout.update(
+#         title_text='<b>Bollinger Bands </b>of ' + str(company_name) + '<br>Rangeslider for Date Adjustment',
+#         xaxis_rangeslider_visible=True)
+#     st.plotly_chart(figta2)
+# 
+# 
+# # ## RSI (Relative Strength Index)
+# # RSI
+# data['RSI'] = talib.RSI(data['Close'], timeperiod=14)
+# 
+# 
+# # Plot
+# def plot_ta3_data():
+#     figta3 = go.Figure()
+#     figta3.add_trace(go.Scatter(x=data['Date'], y=data['Close'], name="Stock Close"))
+#     figta3.add_trace(go.Scatter(x=data['Date'], y=data['RSI'], name="RSI 14"))
+#     figta3.layout.update(title_text='<b>RSI 14 </b>of ' + str(company_name) + '<br>Rangeslider for Date Adjustment',
+#                          xaxis_rangeslider_visible=True)
+#     st.plotly_chart(figta3)
+# 
+# 
+# # Plot for multiselect
+# for i in range(len(TA_Avail)):
+#     if (TA_Avail[i]) in TA_Select and i == 0:
+#         plot_ta1_data()
+#     elif (TA_Avail[i]) in TA_Select and i == 1:
+#         plot_ta2_data()
+#     elif (TA_Avail[i]) in TA_Select and i == 2:
+#         plot_ta3_data()
 
 
